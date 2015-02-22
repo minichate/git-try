@@ -1,8 +1,15 @@
 #!/bin/bash
 
 BASEDIR=$(git rev-parse --show-toplevel)
-JENKINS_URL=$(git config --get try.jenkins)
-JOB_NAME=$(git config --get try.job)
+
+if [ -r $BASEDIR/.try ]
+then
+	source $BASEDIR/.try
+else
+	JENKINS_URL=$(git config --get try.jenkins)
+	JOB_NAME=$(git config --get try.job)
+fi
+
 USERNAME=$(git config --get try.username)
 API_TOKEN=$(git config --get try.token)
 
