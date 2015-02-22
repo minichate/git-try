@@ -36,7 +36,7 @@ fi
 
 cd $BASEDIR
 git fetch origin
-git -c diff.noprefix=false diff --binary --no-color origin/master > /tmp/patch.diff
+git -c diff.noprefix=false diff --binary --no-color $(git merge-base HEAD origin/master) > /tmp/patch.diff
 
 FILE_PARAM="{'name': 'patchfile', 'file': 'file0'}"
 
