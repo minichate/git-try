@@ -1,0 +1,47 @@
+#!/bin/bash
+
+BASEDIR=$(git rev-parse --show-toplevel)
+JENKINS_URL=$(git config --get try.jenkins)
+JOB_NAME=$(git config --get try.job)
+USERNAME=$(git config --get try.username)
+API_TOKEN=$(git config --get try.token)
+
+if [ -z "$JENKINS_URL" ]
+then
+	echo -n "What is the base URL for Jenkins? (ie: https://jenkins/): "
+	read JENKINS_URL
+	git config --add try.jenkins $JENKINS_URL
+fi
+
+if [ -z "$JOB_NAME" ]
+then
+	echo -n "What is the 'try' job name: "
+	read JOB_NAME
+	git config --add try.job $JOB_NAME
+fi
+
+if [ -z "$USERNAME" ]
+then
+	echo -n "What is your Jenkins username: "
+	read USERNAME
+	git config --add try.username $USERNAME
+fi
+
+if [ -z "$API_TOKEN" ]
+then
+	echo -n "What is your Jenkins API token (available at ${JENKINS_URL}user/${USERNAME}/configure): "
+	read API_TOKEN
+	git config --add try.token $API_TOKEN
+fi
+
+cd $BASEDIR
+git fetch origin
+git -c diff.noprefix=false diff --binary --no-color origin/master > /tmp/patch.diff
+
+FILE_PARAM="{'name': 'patchfile', 'file': 'file0'}"
+
+curl \
+	-u $USERNAME:$API_TOKEN \
+	--form file0=@/tmp/patch.diff \
+	--form json="{'parameter': [${FILE_PARAM}]}" \
+	"${JENKINS_URL}/job/${JOB_NAME}/build?delay=0sec"
