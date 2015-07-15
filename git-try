@@ -42,7 +42,13 @@ then
 fi
 
 cd $BASEDIR
-git -c diff.noprefix=false diff --binary --no-color $(git merge-base HEAD origin/master) > /tmp/patch.diff
+git \
+	-c diff.noprefix=false \
+	diff \
+	--binary \
+	--no-color \
+	$(git merge-base HEAD origin/master) \
+	> /tmp/patch.diff
 
 FILE_PARAM="{'name': 'patchfile', 'file': 'file0'}"
 
