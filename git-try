@@ -41,8 +41,8 @@ then
 	git config --add try.token $API_TOKEN
 fi
 
-cd $BASEDIR
 git \
+	-C $BASEDIR \
 	-c diff.noprefix=false \
 	diff \
 	--binary \
