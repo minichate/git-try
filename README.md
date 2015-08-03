@@ -8,7 +8,7 @@ See https://codeascraft.com/2011/10/11/did-you-try-it-before-you-committed/ for 
 Installation
 ------------
 
-Move the `git-try` file to `/usr/bin/git-try` or `/usr/local/bin/git-try`
+Move the `git-try` file to `/usr/local/bin/git-try`
 
 Usage
 -----

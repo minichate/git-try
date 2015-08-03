@@ -41,13 +41,21 @@ then
 	git config --add try.token $API_TOKEN
 fi
 
-cd $BASEDIR
-git -c diff.noprefix=false diff --binary --no-color $(git merge-base HEAD origin/master) > /tmp/patch.diff
+TEMP_FILE_PATH=$(mktemp -t try-git-XXXXXX.patch)
+
+git \
+	-C $BASEDIR \
+	-c diff.noprefix=false \
+	diff \
+	--binary \
+	--no-color \
+	$(git merge-base HEAD origin/master) \
+	> $TEMP_FILE_PATH
 
 FILE_PARAM="{'name': 'patchfile', 'file': 'file0'}"
 
 curl \
 	-u $USERNAME:$API_TOKEN \
-	--form file0=@/tmp/patch.diff \
+	--form file0=@$TEMP_FILE_PATH \
 	--form json="{'parameter': [${FILE_PARAM}]}" \
 	"${JENKINS_URL}/job/${JOB_NAME}/build?delay=0sec"
